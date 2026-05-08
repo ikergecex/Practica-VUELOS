@@ -1,6 +1,23 @@
 #include "tGrafo.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "tPila.h"
+
+void resetearVisitados(tGrafo g) {
+    NodoL *aux = g;
+    while (aux != NULL) {
+        aux->visitado = 0;
+        aux = aux->sig;
+    }
+}
+
+NodoL* buscarNodo(tGrafo g, tCiudad c) {
+    while (g != NULL && !compararCiudad(g->ciudad, c)) {
+        g = g->sig;
+    }
+    return g;
+}
+
 
 void cargarVuelos(tGrafo *g, char* fichero) {
     FILE *f = fopen(fichero, "r");
@@ -79,7 +96,7 @@ void destinosDesdeCiudad(tGrafo g, tCiudad origen) {
 
     NodoAdy* ady = actual->ady;
     while (ady != NULL) {
-        tCiudad destino = ady->vuelo.destino;  // *
+        tCiudad destino = vueloDestino(ady->vuelo);  // *
         if (!impreso[destino]) {
             imprimirCiudad(destino);
             printf("\n");
@@ -90,17 +107,16 @@ void destinosDesdeCiudad(tGrafo g, tCiudad origen) {
 }
 
 
-void dfsConexo(tGrafo g, tCiudad c, int visitado[]) {
-    visitado[c] = 1;
-    NodoL *v = g;
-    while (v != NULL && v->ciudad != c) {
-        v = v->sig;
-    }
-    if (v == NULL) return;
-    NodoAdy *a = v->ady;
+void dfsConexo(tGrafo g, tCiudad c) {
+    NodoL* nodo = buscarNodo(g, c);
+    if (nodo == NULL) return;
+    nodo->visitado = 1;
+
+    NodoAdy *a = nodo->ady;
     while (a != NULL) {
-        if (!visitado[a->vuelo.destino]) {
-            dfsConexo(g, a->vuelo.destino, visitado);
+        NodoL* dest = buscarNodo(g, vueloDestino(a->vuelo));
+        if (dest != NULL && !dest->visitado) {
+            dfsConexo(g, vueloDestino(a->vuelo));
         }
         a = a->sig;
     }
@@ -108,12 +124,14 @@ void dfsConexo(tGrafo g, tCiudad c, int visitado[]) {
 
 int esConexo(tGrafo g) {
     if (g == NULL) return 1;
-    int visitado[NUM_CIUDADES] = {0};
-    dfsConexo(g, g->ciudad, visitado);
-    for (int i = 0; i < NUM_CIUDADES; i++) {
-        if (!visitado[i]) {
+    resetearVisitados(g);
+    dfsConexo(g, g->ciudad);
+    NodoL* aux = g;
+    while (aux != NULL) {
+        if (!aux->visitado) {
             return 0;
         }
+        aux = aux->sig;
     }
     return 1;
 }
@@ -125,13 +143,47 @@ int hayVueloDirecto(tGrafo g, tCiudad origen, tCiudad destino) {
     }
     if (actual == NULL) return 0;
     NodoAdy* ady = actual->ady;
-    while (ady != NULL && !compararCiudad(ady->vuelo.destino, destino)) {
+    while (ady != NULL && !compararCiudad(vueloDestino(ady->vuelo), destino)) {
         ady = ady->sig;
     }
     if (ady == NULL) return 0;
     return 1;
 }
 
-void mostrarTodasLasRutas(tGrafo g, tCiudad origen, tCiudad destino) {
 
+void dfsRutas(tGrafo g, tCiudad actual, tCiudad destino, tPila *camino) {
+    NodoL* nAct = buscarNodo(g, actual);
+    if (nAct == NULL) return;
+    nAct->visitado = 1;
+    Push(camino, actual);
+
+    if (compararCiudad(actual, destino)) {
+        imprimirPila(*camino);
+        printf("\n");
+    } else {
+        NodoAdy *a = nAct->ady;
+        int usados[NUM_CIUDADES] = {0};
+        while (a != NULL) {
+            tCiudad sigCiudad = vueloDestino(a->vuelo);
+            if (!usados[sigCiudad]) {
+                usados[sigCiudad] = 1;
+
+                NodoL *nSig = buscarNodo(g, sigCiudad);
+                if (nSig != NULL && !nSig->visitado) {
+                    dfsRutas(g, sigCiudad, destino, camino);
+                }
+            }
+            a = a->sig;
+        }
+    }
+    Pop(camino);
+    nAct->visitado = 0;
+}
+
+void mostrarTodasLasRutas(tGrafo g, tCiudad origen, tCiudad destino) {
+    tPila camino;
+    CrearPilaVacia(&camino);
+    resetearVisitados(g);
+    dfsRutas(g, origen, destino, &camino);
+    DestruirPila(&camino);
 }
