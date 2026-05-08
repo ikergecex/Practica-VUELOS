@@ -17,9 +17,12 @@ int main(void) {
         printf("\nEl grafo NO es conexo\n");
 
     if (hayVueloDirecto(g, ciudadDesdeNombre("Madrid"), ciudadDesdeNombre("Atenas"))) {
-        printf("\nSI ay vuelo directo\n");
+        printf("\nSI hay vuelo directo\n");
     }
     else printf("\nNO hay vuelo directo\n");
+
+    printf("\nRutas desde Madrid hasta Amsterdam:\n"); //Esto lo escribo yo segun q ciudades quiera buscar
+    mostrarTodasLasRutas(g, ciudadDesdeNombre("Madrid"), ciudadDesdeNombre("Amsterdam"));
 
     return 0;
 }
