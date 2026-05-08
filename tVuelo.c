@@ -13,8 +13,12 @@ void imprimirVuelo(tVuelo v) {
     printf("Ciudad: ");
     imprimirCiudad(v.destino);
     printf("\nCompania: %s\n", v.compania);
-    printf("\nTiempo: %d\n", v.tiempo);
-    printf("\nPrecio: %.2f\n", v.precio);
+    printf("\nTiempo: %d\n", vueloTiempo(v));
+    printf("\nPrecio: %.2f\n", vueloPrecio(v));
+}
+
+void asignarVuelo(tVuelo* dest, tVuelo origen) {
+    *dest = origen;
 }
 
 int compararPrecio(tVuelo a, tVuelo b) {
@@ -25,4 +29,17 @@ int compararPrecio(tVuelo a, tVuelo b) {
 
 int compararTiempo(tVuelo a, tVuelo b) {
     return (a.tiempo - b.tiempo);
+}
+
+
+tCiudad vueloDestino(tVuelo v) {
+    return v.destino;
+}
+
+int vueloTiempo(tVuelo v) {
+    return v.tiempo;
+}
+
+float vueloPrecio(tVuelo v) {
+    return v.precio;
 }
