@@ -14,9 +14,15 @@ void crearVuelo(tVuelo *v, tCiudad destino, char* compania, int tiempo, float pr
 
 void imprimirVuelo(tVuelo v);
 
+void asignarVuelo(tVuelo *dest, tVuelo origen);
+
 int compararPrecio(tVuelo a, tVuelo b);
 
 int compararTiempo(tVuelo a, tVuelo b);
+
+tCiudad vueloDestino(tVuelo v);
+int vueloTiempo(tVuelo v);
+float vueloPrecio(tVuelo v);
 
 
 #endif //UNTITLED7_TVUELO_H
