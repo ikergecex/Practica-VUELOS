@@ -12,11 +12,17 @@ typedef NodoAdy* ListaAdy;
 
 typedef struct NodoL {
     tCiudad ciudad;
+    int visitado;
     NodoAdy* ady;
     struct NodoL* sig;
 } NodoL;
 
 typedef NodoL* tGrafo;
+
+
+void resetearVisitados(tGrafo g);
+
+NodoL* buscarNodo(tGrafo g, tCiudad c);
 
 
 void cargarVuelos(tGrafo *g, char* fichero);
@@ -25,7 +31,7 @@ void insertarVuelo(tGrafo *g, tCiudad origen, tVuelo v);
 
 void destinosDesdeCiudad(tGrafo g, tCiudad origen);
 
-void dfsConexo(tGrafo g, tCiudad c, int visitado[]);
+void dfsConexo(tGrafo g, tCiudad c);
 int esConexo(tGrafo g);
 
 int hayVueloDirecto(tGrafo g, tCiudad origen, tCiudad destino);
