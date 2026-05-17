@@ -43,3 +43,5 @@ int vueloTiempo(tVuelo v) {
 float vueloPrecio(tVuelo v) {
     return v.precio;
 }
+
+
