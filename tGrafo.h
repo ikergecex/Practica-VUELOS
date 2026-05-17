@@ -2,6 +2,7 @@
 #define UNTITLED7_TGRAFO_H
 #include "tVuelo.h"
 #include "tCiudad.h"
+#include "tPila.h"
 
 typedef struct NodoAdy {
     tVuelo vuelo;
@@ -25,6 +26,8 @@ void resetearVisitados(tGrafo g);
 NodoL* buscarNodo(tGrafo g, tCiudad c);
 
 
+void crearGrafoVacio(tGrafo *g);
+
 void cargarVuelos(tGrafo *g, char* fichero);
 
 void insertarVuelo(tGrafo *g, tCiudad origen, tVuelo v);
@@ -38,5 +41,17 @@ int hayVueloDirecto(tGrafo g, tCiudad origen, tCiudad destino);
 
 void mostrarTodasLasRutas(tGrafo g, tCiudad origen, tCiudad destino);
 
+void ciudadesFuenteSumidero(tGrafo g);
+
+
+void dfsRutas(tGrafo g, tCiudad actual, tCiudad destino, tPila *camino);
+
+void dfsPrecio(tGrafo g, tCiudad actual, tCiudad destino, tPila* camino, float precioActual);
+
+void trayectoMasCaroYBarato(tGrafo g, tCiudad origen, tCiudad destino);
+
+void dfsTiempo(tGrafo g, tCiudad actual, tCiudad destino, tPila *camino, int tiempoActual);
+
+void trayectoMasRapidoYLento(tGrafo g, tCiudad origen, tCiudad destino);
 
 #endif //UNTITLED7_TGRAFO_H
